@@ -1,0 +1,23 @@
+name: Run Unit Tests
+
+on: [push]
+
+jobs:
+  run-unit-tests:
+    name: Run Unit Tests Job
+    runs-on: ubuntu-latest
+
+    steps: 
+      # Download code in VM
+      - uses: actions/checkout@v4
+
+      # Install Node
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      # It's the same as "npm i", but doesn't update versions and doesn't require interaction with users
+      - run: npm ci
+
+      - run: npm test
