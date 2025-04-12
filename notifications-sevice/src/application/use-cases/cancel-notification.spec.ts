@@ -3,6 +3,7 @@ import { CancelNotification } from './cancel-notification';
 import { NotificationNotFound } from './errors/notification-not-found';
 import { makeNotification } from '@test/factories/notification-factory';
 import { NotificationAlreadyRead } from './errors/notification-already-read';
+import { NotificationIsCanceled } from './errors/notification-is-canceled';
 
 describe('Use-cases: cancel notification', () => {
   it('should be able to cancel a notification', async () => {
@@ -44,5 +45,18 @@ describe('Use-cases: cancel notification', () => {
     await expect(
       cancelNotification.execute({ notificationId: notification.id }),
     ).rejects.toThrow(NotificationAlreadyRead);
+  });
+
+  it('should not be able to cancel a canceled notification', async () => {
+    const notificationsRespository = new InMemoryNotificationsRepository();
+    const cancelNotification = new CancelNotification(notificationsRespository);
+
+    const notification = makeNotification({ canceledAt: new Date() });
+
+    await notificationsRespository.create(notification);
+
+    await expect(
+      cancelNotification.execute({ notificationId: notification.id }),
+    ).rejects.toThrow(NotificationIsCanceled);
   });
 });

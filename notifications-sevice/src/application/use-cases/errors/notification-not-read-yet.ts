@@ -1,5 +1,7 @@
-export class NotificationNotReadYet extends Error {
+import { HttpException } from '@nestjs/common';
+
+export class NotificationNotReadYet extends HttpException {
   constructor() {
-    super('Notification not read yet.');
+    super('Notification not read yet.', 400);
   }
 }
